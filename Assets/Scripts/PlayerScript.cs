@@ -1,21 +1,21 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-
 public class PlayerScript : MonoBehaviour
 {
-    [SerializeField] private float forceFactor = 1.0f;
-    
+    [SerializeField]
+    private float forceFactor = 1.0f;
+
     private InputAction moveAction;
     private Rigidbody rb;
     private Vector3 correctedForward;
-    
-    void Start()
+
+    private void Start()
     {
         moveAction = InputSystem.actions.FindAction("Move");
         rb = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
+
     void Update()
     {
         Vector2 moveValue = moveAction.ReadValue<Vector2>();
@@ -24,8 +24,9 @@ public class PlayerScript : MonoBehaviour
         correctedForward.Normalize();
         Vector3 forceValue = forceFactor *
 // new Vector3(moveValue.x, 0.Of, moveValue.y); - Big
-                             (Camera.main.transform.right * moveValue.x +
-                              correctedForward * moveValue.y);
+(Camera.main.transform.right * moveValue.x +
+correctedForward * moveValue.y);
         rb.AddForce(forceValue);
     }
+
 }
