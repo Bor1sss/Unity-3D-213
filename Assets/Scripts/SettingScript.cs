@@ -26,6 +26,9 @@ public class SettingScript : MonoBehaviour
     private Slider sensYSlider;
     private float defaultSensY = 0.5f;
 
+    private TMPro.TMP_Dropdown difficultyDropDown;
+    private int defaultDifficulty;
+
 
     void Start()
     {
@@ -44,7 +47,7 @@ public class SettingScript : MonoBehaviour
         defaultSensX = sensXSlider.value;
         sensYSlider = contentTransform.Find("SensYSlider").GetComponent<Slider>();
         defaultSensY = sensYSlider.value;
-
+        
 
         saveButton = contentTransform.Find("SaveButton").GetComponent<Button>();
         closeButton = contentTransform.Find("CloseButton").GetComponent<Button>();
@@ -103,6 +106,16 @@ public class SettingScript : MonoBehaviour
             GameState.sensitivityLookY = sensYSlider.value;
         }
 
+        if (PlayerPrefs.HasKey(nameof(GameState.ambientVolume)))
+        {
+            GameState.difficulty = (GameState.GameDifficulty)PlayerPrefs.GetInt(nameof(GameState.difficulty));
+            difficultyDropDown.value = (int)GameState.difficulty;
+        }
+        else
+        {
+            GameState.difficulty = (GameState.GameDifficulty)difficultyDropDown.value;
+        }
+
         Time.timeScale = content.activeInHierarchy ? 0.0f : 1.0f;
     }
 
@@ -123,6 +136,8 @@ public class SettingScript : MonoBehaviour
 
         PlayerPrefs.SetFloat(nameof(GameState.sensitivityLookX), GameState.sensitivityLookX);
         PlayerPrefs.SetFloat(nameof(GameState.sensitivityLookY), GameState.sensitivityLookY);
+
+        PlayerPrefs.SetInt(nameof(GameState.difficulty), (int)GameState.difficulty);
         PlayerPrefs.Save();
     }
 
@@ -138,6 +153,9 @@ public class SettingScript : MonoBehaviour
         effectsVolumeSlider.value = defaultEffectsVolume;
         GameState.isMuted = defaultMuteAll;
         muteAllToggle.isOn = defaultMuteAll;
+
+        GameState.difficulty = (GameState.GameDifficulty)defaultDifficulty;
+        difficultyDropDown.value = defaultDifficulty;
         OnSaveButtonClick();
     }
 
@@ -154,5 +172,12 @@ public class SettingScript : MonoBehaviour
     public void OnEffectsVolumeChanged(Single value) => GameState.effectsVolume = value;
     public void OnAmbientVolumeChanged(Single value) => GameState.ambientVolume = value;
     public void OnMuteAllChanged(bool value) => GameState.isMuted = value;
+
+    public void OnDifficultyChanged(int selectedIndex)
+
+    {
+        GameState.difficulty = (GameState.GameDifficulty)selectedIndex;
+        Debug.Log(selectedIndex);
+    }
 
 }
